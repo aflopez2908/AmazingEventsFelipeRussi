@@ -50,4 +50,8 @@ input[type="radio"]:checked{
 
 }
 
+.cardinfo{
+    max-width: 80vw;
+}
+
 
