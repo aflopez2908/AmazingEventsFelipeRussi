@@ -77,3 +77,11 @@ th{
     background-color: #0c0103;
     border-color: white;
 }
+
+footer {
+    position: relative;
+    top: 23vh;
+    width: 100%;
+    color: #fff;
+    text-align: end;
+}
