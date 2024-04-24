@@ -55,3 +55,25 @@ input[type="radio"]:checked{
 }
 
 
+form{
+    width: 50vw;
+}
+
+.table{
+    margin: 4rem;
+}
+
+th{
+    background-color: #3b020c !important;
+    color: white !important;
+}
+
+.format .btn {
+    background-color: #3b020c;
+    border-color: #3b020c;
+}
+
+.format .btn:hover {
+    background-color: #0c0103;
+    border-color: white;
+}
