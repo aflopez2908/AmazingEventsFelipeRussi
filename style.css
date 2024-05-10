@@ -1,3 +1,5 @@
+
+
 .logo{
     width: 6vw;
     margin-left: 2rem;
@@ -5,16 +7,37 @@
 .navbar{background-color: #3b020c;
 }
 
+/*estilos del carerrusel*/
+
 .carousel-item{
     height: 40vh; 
+    background-color: black;
+}
+
+.carousel-item img{
+    opacity: 0.5;
+    object-fit: scale-down;
 }
 
 .carousel-caption h5{
     font-size: 5vw !important;
 }
-.card{
+
+/*estilos de las cartas*/
+.tarjeta{
     margin: 0.5rem;
+    display: flex !important;
 }
+
+.card-img-top{
+    height: 30vh;
+
+    object-fit: cover;
+
+}
+
+/* estilo del form */
+
 .form-check, .searchvar{
     padding: 1rem;
 }
@@ -85,3 +108,4 @@ footer {
     color: #fff;
     text-align: end;
 }
+
