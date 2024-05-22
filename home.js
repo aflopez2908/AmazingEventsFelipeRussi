@@ -204,7 +204,7 @@ function crearCheckBox(padre, data, position){
 
     nuevocheck.innerHTML=`
 
-    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault">
+    <input class="form-check-input" type="checkbox" name="flexRadioDefault" id="flexRadioDefault">
                     <label class="form-check-label" for="flexRadioDefault">
                         ${data[position].category}
                     </label>
@@ -212,7 +212,6 @@ function crearCheckBox(padre, data, position){
     `
     padre.appendChild(nuevocheck)         
 }
-
 
 
 function crearTarjeta(padre, data,position) {
@@ -229,7 +228,7 @@ function crearTarjeta(padre, data,position) {
     <div class="card-body">
       <h5 class="card-title">${data[position].name}</h5>
       <p class="card-text">${data[position].description}</p>
-      <a href="details.html" class="btn btn-primary">Know more</a>
+      <a href="details.html?id=${data[position]._id}" class="btn btn-primary">Know more</a>
     </div>
   </div>
 `;
@@ -293,6 +292,23 @@ searchBar.addEventListener("keyup", function() {
 
   padre.innerHTML = "";
 
-  pintarTarjeta(padre,filteredNotes)
+  if (filteredNotes.length === 0) {
+
+    padre.innerHTML=(`
+
+    <div class="alert bg-secondary">
+
+                <h2>no hay contenido relacionado</h2>
+
+                <p>verifica los parametros de busqueda</p>
+
+            </div>
+    
+    `)
+    
+    console.log("No hay coincidencias");
+  } else {
+    pintarTarjeta(padre, filteredNotes);
+  }
   
 });
