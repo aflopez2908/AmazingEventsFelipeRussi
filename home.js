@@ -197,6 +197,22 @@ const data = {
 
 let padre = document.getElementById("cards_container");
 
+function crearCheckBox(padre, data, position){
+
+    let nuevocheck= document.createElement("div");
+    nuevocheck.classList.add('form-check')
+
+    nuevocheck.innerHTML=`
+
+    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault">
+                    <label class="form-check-label" for="flexRadioDefault">
+                        ${data[position].category}
+                    </label>
+    
+    `
+    padre.appendChild(nuevocheck)         
+}
+
 
 
 function crearTarjeta(padre, data,position) {
@@ -209,10 +225,10 @@ function crearTarjeta(padre, data,position) {
   nuevaTarjeta.innerHTML = `
   <div class="card border border-light mb-3" style="width: 18rem;">
   
-    <img src=${data.events[position].image} class="card-img-top " alt="...">
+    <img src=${data[position].image} class="card-img-top " alt="...">
     <div class="card-body">
-      <h5 class="card-title">${data.events[position].name}</h5>
-      <p class="card-text">${data.events[position].description}</p>
+      <h5 class="card-title">${data[position].name}</h5>
+      <p class="card-text">${data[position].description}</p>
       <a href="details.html" class="btn btn-primary">Know more</a>
     </div>
   </div>
@@ -223,7 +239,7 @@ function crearTarjeta(padre, data,position) {
 
 function pintarTarjeta(padre,data) {
 
-    for (let index = 0; index < data.events.length; index++) {
+    for (let index = 0; index < data.length; index++) {
         crearTarjeta(padre,data,index)
         
         
@@ -232,5 +248,51 @@ function pintarTarjeta(padre,data) {
     
 }
 
+function pintarCheckBox(padre, data) {
+  let revision = [];
 
-pintarTarjeta(padre,data)
+  for (let index = 0; index < data.length; index++) {
+    if (revision.some(element => element === data[index].category)) {
+      console.log("Repetido:", data[index].category);
+    } else {
+      crearCheckBox(padre, data, index);
+      revision.push(data[index].category);
+      console.log("Revision:", revision);
+    }
+  }
+}
+
+
+
+let padreCheck= document.getElementById('padreChecks')
+
+pintarTarjeta(padre,data.events)
+pintarCheckBox(padreCheck,data.events)
+
+
+
+
+
+
+
+
+
+
+
+//definicion del listener para traer el searchbar
+let searchBar = document.getElementById("searchbarhome");
+
+searchBar.addEventListener("keyup", function() {
+  let searchTerm = searchBar.value.toLowerCase();
+
+
+  let filteredNotes = data.events.filter(function(data) {
+    return data.name.toLowerCase().includes(searchTerm) || 
+           data.description.toLowerCase().includes(searchTerm);
+  });
+
+  padre.innerHTML = "";
+
+  pintarTarjeta(padre,filteredNotes)
+  
+});

@@ -197,8 +197,6 @@ const data = {
   
   let padre = document.getElementById("cards_container_upcoming");
   
-  
-  
   function crearTarjeta(padre, data,position) {
   
     let nuevaTarjeta = document.createElement("div");
