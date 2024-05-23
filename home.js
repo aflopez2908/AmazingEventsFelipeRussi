@@ -197,6 +197,33 @@ const data = {
 
 let padre = document.getElementById("cards_container");
 
+
+function handleCheckboxChange(event) {
+
+
+
+
+  // crear una funcion que administrara un arreglo , en donde se agregara los valores del check box 
+  // todos los valores del checkbox estaran en este arreglo
+
+
+
+
+  //   hacer un for anidado el cual si el valor de la nota en la poscicion de i , es igual
+  // al valor de uno de los valores del arreglo, agregara el evento al arreglo imprimir
+
+  // imprimimos el arreglo filtrado
+
+
+  // console.log(event.target.checked); // Registro del valor del checkbox
+  // let label = event.target.nextElementSibling; // Obtener el label asociado al checkbox
+  // if (event.target.checked) {
+  //     console.log(label.textContent);
+  //     // Agregar la lógica adicional si es necesario
+  // }
+}
+
+
 function crearCheckBox(padre, data, position){
 
     let nuevocheck= document.createElement("div");
@@ -210,7 +237,9 @@ function crearCheckBox(padre, data, position){
                     </label>
     
     `
-    padre.appendChild(nuevocheck)         
+    padre.appendChild(nuevocheck) 
+
+    nuevocheck.querySelector('input').addEventListener('change', handleCheckboxChange);
 }
 
 
@@ -252,11 +281,9 @@ function pintarCheckBox(padre, data) {
 
   for (let index = 0; index < data.length; index++) {
     if (revision.some(element => element === data[index].category)) {
-      console.log("Repetido:", data[index].category);
     } else {
       crearCheckBox(padre, data, index);
       revision.push(data[index].category);
-      console.log("Revision:", revision);
     }
   }
 }
@@ -267,14 +294,6 @@ let padreCheck= document.getElementById('padreChecks')
 
 pintarTarjeta(padre,data.events)
 pintarCheckBox(padreCheck,data.events)
-
-
-
-
-
-
-
-
 
 
 
@@ -312,3 +331,8 @@ searchBar.addEventListener("keyup", function() {
   }
   
 });
+
+
+
+
+
