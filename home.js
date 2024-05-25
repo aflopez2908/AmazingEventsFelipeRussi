@@ -200,29 +200,6 @@ impresion=[]
 
 
 function handleCheckboxChange(event) {
-
-  // al tener un check traer todos los objetos los cuales tengan esa categoria en un arrglo
-  // el contenido del arreglo concat a un arreglo impresion
-  // imprimir impresion
-
-  // si el estado 
-
-
-
-
-  // crear una funcion que administrara un arreglo , en donde se agregara los valores del check box 
-  // todos los valores del checkbox estaran en este arreglo
-
-
-
-
-  //   hacer un for anidado el cual si el valor de la nota en la poscicion de i , es igual
-  // al valor de uno de los valores del arreglo, agregara el evento al arreglo imprimir
-
-  // imprimimos el arreglo filtrado
-
-
-  // console.log(event.target.checked); // Registro del valor del checkbox
   let label = event.target.nextElementSibling;
   if (event.target.checked){
 
@@ -263,7 +240,6 @@ console.log(impresion);
   // }
 }
 
-
 function crearCheckBox(padre, data, position){
 
     let nuevocheck= document.createElement("div");
@@ -282,7 +258,6 @@ function crearCheckBox(padre, data, position){
 
     nuevocheck.querySelector('input').addEventListener('change', handleCheckboxChange);
 }
-
 
 function crearTarjeta(padre, data,position) {
 

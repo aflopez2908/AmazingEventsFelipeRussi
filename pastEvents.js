@@ -206,12 +206,13 @@ const data = {
     nuevaTarjeta.classList.add("tarjeta");
   
     nuevaTarjeta.innerHTML = `
-    <div class="card border border-light " style="width: 18rem;">
-      <img src=${data.events[position].image} class="card-img-top" alt="...">
+    <div class="card border border-light mb-3" style="width: 18rem;">
+    
+      <img src=${data.events[position].image} class="card-img-top " alt="...">
       <div class="card-body">
         <h5 class="card-title">${data.events[position].name}</h5>
         <p class="card-text">${data.events[position].description}</p>
-        <a href="details.html" class="btn btn-primary">Know more</a>
+        <a href="details.html?id=${data.events[position]._id}" class="btn btn-primary">Know more</a>
       </div>
     </div>
   `;

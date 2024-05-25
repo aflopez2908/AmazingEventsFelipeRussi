@@ -202,14 +202,16 @@ const data = {
     let nuevaTarjeta = document.createElement("div");
   
     nuevaTarjeta.classList.add("tarjeta");
+    
   
     nuevaTarjeta.innerHTML = `
-    <div class="card border border-light " style="width: 18rem;">
-      <img src=${data.events[position].image} class="card-img-top" alt="...">
+    <div class="card border border-light mb-3" style="width: 18rem;">
+    
+      <img src=${data.events[position].image} class="card-img-top " alt="...">
       <div class="card-body">
         <h5 class="card-title">${data.events[position].name}</h5>
         <p class="card-text">${data.events[position].description}</p>
-        <a href="details.html" class="btn btn-primary">Know more</a>
+        <a href="details.html?id=${data.events[position]._id}" class="btn btn-primary">Know more</a>
       </div>
     </div>
   `;
@@ -226,6 +228,49 @@ const data = {
       }
       
   }
-  
+
   
   pintarTarjeta(padre,data)
+  
+  
+  function crearCheckBox(padre, data, position){
+
+    let nuevocheck= document.createElement("div");
+    nuevocheck.classList.add('form-check')
+
+    nuevocheck.innerHTML=`
+
+    <input class="form-check-input" type="checkbox" name="flexRadioDefault" id="flexRadioDefault">
+                    <label class="form-check-label" for="flexRadioDefault">
+                        ${data[position].category}
+                    </label>
+    
+    `
+    padre.appendChild(nuevocheck) 
+    
+
+    nuevocheck.querySelector('input').addEventListener('change', handleCheckboxChange);
+}
+function pintarCheckBox(padre, data) {
+  let revision = [];
+
+  for (let index = 0; index < data.length; index++) {
+    if (revision.some(element => element === data[index].category)) {
+    } else {
+      crearCheckBox(padre, data, index);
+      revision.push(data[index].category);
+    }
+  }
+}
+
+
+let padreCheck= document.getElementById('padreChecksup')
+
+pintarCheckBox(padreCheck,data.events[0])
+console.log(data.events[1]);
+
+
+
+
+
+   
