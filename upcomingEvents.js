@@ -194,6 +194,25 @@ const data = {
       },
     ],
   };
+let arregloupcomin=[]
+
+impresion=[]
+
+function menores(data){
+  let temp=[]
+  for (let index = 0; index < data.events.length; index++) {
+
+    if(data.currentDate<data.events[index].date){
+      temp.push(data.events[index])
+    }
+     
+  }
+    
+   return temp 
+  }
+
+arregloupcomin=menores(data)
+
   
   let padre = document.getElementById("cards_container_upcoming");
   
@@ -207,11 +226,11 @@ const data = {
     nuevaTarjeta.innerHTML = `
     <div class="card border border-light mb-3" style="width: 18rem;">
     
-      <img src=${data.events[position].image} class="card-img-top " alt="...">
+      <img src=${data[position].image} class="card-img-top " alt="...">
       <div class="card-body">
-        <h5 class="card-title">${data.events[position].name}</h5>
-        <p class="card-text">${data.events[position].description}</p>
-        <a href="details.html?id=${data.events[position]._id}" class="btn btn-primary">Know more</a>
+        <h5 class="card-title">${data[position].name}</h5>
+        <p class="card-text">${data[position].description}</p>
+        <a href="details.html?id=${data[position]._id}" class="btn btn-primary">Know more</a>
       </div>
     </div>
   `;
@@ -221,18 +240,55 @@ const data = {
   
   function pintarTarjeta(padre,data) {
   
-      for (let index = 0; index < data.events.length; index++) {
-        if(data.currentDate<data.events[index].date)
-          crearTarjeta(padre,data,index)
-          
-      }
+      for (let index = 0; index < data.length; index++) {
+          crearTarjeta(padre,data,index)  
       
-  }
+  }}
 
   
-  pintarTarjeta(padre,data)
+  pintarTarjeta(padre,arregloupcomin)
+  
+ 
+  function handleCheckboxChange(event) {
+    let label = event.target.nextElementSibling;
+    if (event.target.checked){
+  
+    temporal=[] 
+  
+    for (let index = 0; index < data.events.length; index++) {
+      //filtrar paraer que no se repita si esta activo
+
+      if(label.textContent.trim()  == data.events[index].category){
+        temporal.push(data.events[index])
+  
+      }
+    }}
+
+    else {
+      // Si el checkbox no está marcado, eliminar eventos de impresion y temporal que coincidan con la categoría
+      // temporal=temporal.filter(event => event.category !== label.textContent.trim())
+      impresion= impresion.filter(event => event.category !== label.textContent.trim())
+  }
+    
+  
+  impresion=impresion.concat(temporal)
+  console.log(impresion);
+  
+    padre.innerHTML=''
+    
+    pintarTarjeta(padre,impresion)
+    
   
   
+  
+    console.log(temporal);
+    
+    // Obtener el label asociado al checkbox
+    // if (event.target.checked) {
+    //     console.log(label.textContent);
+    //     // Agregar la lógica adicional si es necesario
+    // }
+  }  
   function crearCheckBox(padre, data, position){
 
     let nuevocheck= document.createElement("div");
@@ -266,8 +322,7 @@ function pintarCheckBox(padre, data) {
 
 let padreCheck= document.getElementById('padreChecksup')
 
-pintarCheckBox(padreCheck,data.events[0])
-console.log(data.events[1]);
+pintarCheckBox(padreCheck,arregloupcomin)
 
 
 
