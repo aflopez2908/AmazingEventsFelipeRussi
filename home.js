@@ -196,9 +196,16 @@ const data = {
 };
 
 let padre = document.getElementById("cards_container");
+impresion=[]
 
 
 function handleCheckboxChange(event) {
+
+  // al tener un check traer todos los objetos los cuales tengan esa categoria en un arrglo
+  // el contenido del arreglo concat a un arreglo impresion
+  // imprimir impresion
+
+  // si el estado 
 
 
 
@@ -216,7 +223,40 @@ function handleCheckboxChange(event) {
 
 
   // console.log(event.target.checked); // Registro del valor del checkbox
-  // let label = event.target.nextElementSibling; // Obtener el label asociado al checkbox
+  let label = event.target.nextElementSibling;
+  if (event.target.checked){
+
+  temporal=[] 
+
+  for (let index = 0; index < data.events.length; index++) {
+    console.log(label.textContent);
+    console.log(data.events[index].category);
+    if(label.textContent.trim()  == data.events[index].category){
+      temporal.push(data.events[index])
+
+    }
+   
+      
+  }}
+  else {
+    // Si el checkbox no está marcado, eliminar eventos de impresion y temporal que coincidan con la categoría
+    temporal=temporal.filter(event => event.category !== label.textContent.trim())
+    impresion= impresion.filter(event => event.category !== label.textContent.trim())
+}
+
+impresion=impresion.concat(temporal)
+console.log(impresion);
+
+  padre.innerHTML=''
+  
+  pintarTarjeta(padre,impresion)
+  
+
+
+
+  console.log(temporal);
+  
+  // Obtener el label asociado al checkbox
   // if (event.target.checked) {
   //     console.log(label.textContent);
   //     // Agregar la lógica adicional si es necesario
@@ -238,6 +278,7 @@ function crearCheckBox(padre, data, position){
     
     `
     padre.appendChild(nuevocheck) 
+    
 
     nuevocheck.querySelector('input').addEventListener('change', handleCheckboxChange);
 }
@@ -269,9 +310,7 @@ function pintarTarjeta(padre,data) {
 
     for (let index = 0; index < data.length; index++) {
         crearTarjeta(padre,data,index)
-        
-        
-        
+         
     }
     
 }
