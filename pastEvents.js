@@ -194,6 +194,22 @@ const data = {
       },
     ],
   };
+  let arregloupcomin=[]
+
+  function menores(data){
+    let temp=[]
+    for (let index = 0; index < data.events.length; index++) {
+  
+      if(data.currentDate<data.events[index].date){
+        temp.push(data.events[index])
+      }
+       
+    }
+      
+     return temp 
+    }
+  
+  arregloupcomin=menores(data)
  
 
 // Variables globales para almacenar el estado de los filtros
@@ -206,8 +222,8 @@ let padre = document.getElementById("cards_container_past");
 let searchBar = document.getElementById("searchbarhome");
 
 // Inicializar el contenido
-pintarCheckBox(padreCheck, data.events);
-pintarTarjeta(padre, data.events);
+pintarCheckBox(padreCheck, arregloupcomin);
+pintarTarjeta(padre, arregloupcomin);
 
 // Listener para el searchbar
 searchBar.addEventListener("keyup", function() {
