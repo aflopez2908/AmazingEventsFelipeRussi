@@ -194,21 +194,98 @@ const data = {
       },
     ],
   };
-  
-  let padre = document.getElementById("cards_container_past");
-  
-  
-  
-  function crearTarjeta(padre, data,position) {
-  
-    let nuevaTarjeta = document.createElement("div");
-  
-    nuevaTarjeta.classList.add("tarjeta");
-  
-    nuevaTarjeta.innerHTML = `
+ 
+
+// Variables globales para almacenar el estado de los filtros
+let searchTerm = '';
+let selectedCategories = new Set();
+
+// Elementos DOM
+let padreCheck = document.getElementById('padreCheckspast');
+let padre = document.getElementById("cards_container_past");
+let searchBar = document.getElementById("searchbarhome");
+
+// Inicializar el contenido
+pintarCheckBox(padreCheck, data.events);
+pintarTarjeta(padre, data.events);
+
+// Listener para el searchbar
+searchBar.addEventListener("keyup", function() {
+  searchTerm = searchBar.value.toLowerCase();
+  applyFilters();
+});
+
+// Función para aplicar los filtros combinados
+function applyFilters() {
+  let filteredNotes = data.events.filter(event => {
+    let matchesCategory = selectedCategories.size === 0 || selectedCategories.has(event.category);
+    let matchesSearchTerm = event.name.toLowerCase().includes(searchTerm) || event.description.toLowerCase().includes(searchTerm);
+    let isPastEvent = data.currentDate > event.date;
+    return matchesCategory && matchesSearchTerm && isPastEvent;
+  });
+
+  padre.innerHTML = "";
+
+  if (filteredNotes.length === 0) {
+    padre.innerHTML = `
+      <div class="alert bg-secondary">
+        <h2>No hay contenido relacionado</h2>
+        <p>Verifica los parámetros de búsqueda</p>
+      </div>
+    `;
+    console.log("No hay coincidencias");
+  } else {
+    pintarTarjeta(padre, { events: filteredNotes });
+  }
+}
+
+// Listener para los checkboxes
+function handleCheckboxChange(event) {
+  let label = event.target.nextElementSibling;
+  let category = label.textContent.trim();
+
+  if (event.target.checked) {
+    selectedCategories.add(category);
+  } else {
+    selectedCategories.delete(category);
+  }
+
+  applyFilters();
+}
+
+function crearCheckBox(padre, data, position) {
+  let nuevocheck = document.createElement("div");
+  nuevocheck.classList.add('form-check');
+
+  nuevocheck.innerHTML = `
+    <input class="form-check-input" type="checkbox" name="flexRadioDefault" id="flexRadioDefault${position}">
+    <label class="form-check-label" for="flexRadioDefault${position}">
+      ${data[position].category}
+    </label>
+  `;
+
+  padre.appendChild(nuevocheck);
+  nuevocheck.querySelector('input').addEventListener('change', handleCheckboxChange);
+}
+
+function pintarCheckBox(padre, data) {
+  let revision = [];
+
+  for (let index = 0; index < data.length; index++) {
+    if (!revision.includes(data[index].category)) {
+      crearCheckBox(padre, data, index);
+      revision.push(data[index].category);
+    }
+  }
+}
+
+function crearTarjeta(padre, data, position) {
+  let nuevaTarjeta = document.createElement("div");
+  nuevaTarjeta.classList.add("tarjeta");
+
+  nuevaTarjeta.innerHTML = `
     <div class="card border border-light mb-3" style="width: 18rem;">
-    
-      <img src=${data.events[position].image} class="card-img-top " alt="...">
+      <img src=${data.events[position].image} class="card-img-top" alt="...">
       <div class="card-body">
         <h5 class="card-title">${data.events[position].name}</h5>
         <p class="card-text">${data.events[position].description}</p>
@@ -216,19 +293,19 @@ const data = {
       </div>
     </div>
   `;
-  
-    padre.appendChild(nuevaTarjeta);
+
+  padre.appendChild(nuevaTarjeta);
+}
+
+function pintarTarjeta(padre, data) {
+  padre.innerHTML = '';
+  for (let index = 0; index < data.events.length; index++) {
+    if (data.currentDate > data.events[index].date) {
+      crearTarjeta(padre, data, index);
+    }
   }
-  
-  function pintarTarjeta(padre,data) {
-  
-      for (let index = 0; index < data.events.length; index++) {
-        if(data.currentDate>data.events[index].date)
-          crearTarjeta(padre,data,index)
-          
-      }
-      
-  }
-  
-  
-  pintarTarjeta(padre,data)
+}
+
+// Inicializar la interfaz
+pintarTarjeta(padre, data);
+pintarCheckBox(padreCheck, data.events);
