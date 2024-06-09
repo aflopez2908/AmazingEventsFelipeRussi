@@ -249,81 +249,82 @@ arregloupcomin=menores(data)
   pintarTarjeta(padre,arregloupcomin)
   
  
-  function handleCheckboxChange(event) {
+// Variables globales para almacenar el estado de los filtros
+let searchTerm = '';
+let selectedCategories = new Set();
+
+function handleCheckboxChange(event) {
     let label = event.target.nextElementSibling;
-    if (event.target.checked){
-  
-    temporal=[] 
-  
-    for (let index = 0; index < data.events.length; index++) {
-      //filtrar paraer que no se repita si esta activo
-
-      if(label.textContent.trim()  == data.events[index].category){
-        temporal.push(data.events[index])
-  
-      }
-    }}
-
-    else {
-      // Si el checkbox no está marcado, eliminar eventos de impresion y temporal que coincidan con la categoría
-      // temporal=temporal.filter(event => event.category !== label.textContent.trim())
-      impresion= impresion.filter(event => event.category !== label.textContent.trim())
-  }
+    let category = label.textContent.trim();
     
-  
-  impresion=impresion.concat(temporal)
-  console.log(impresion);
-  
-    padre.innerHTML=''
+    if (event.target.checked) {
+        selectedCategories.add(category);
+    } else {
+        selectedCategories.delete(category);
+    }
     
-    pintarTarjeta(padre,impresion)
-    
-  
-  
-  
-    console.log(temporal);
-    
-    // Obtener el label asociado al checkbox
-    // if (event.target.checked) {
-    //     console.log(label.textContent);
-    //     // Agregar la lógica adicional si es necesario
-    // }
-  }  
-  function crearCheckBox(padre, data, position){
+    applyFilters();
+}
 
-    let nuevocheck= document.createElement("div");
-    nuevocheck.classList.add('form-check')
-
-    nuevocheck.innerHTML=`
-
-    <input class="form-check-input" type="checkbox" name="flexRadioDefault" id="flexRadioDefault">
-                    <label class="form-check-label" for="flexRadioDefault">
-                        ${data[position].category}
-                    </label>
+function crearCheckBox(padre, data, position) {
+    let nuevocheck = document.createElement("div");
+    nuevocheck.classList.add('form-check');
     
-    `
-    padre.appendChild(nuevocheck) 
+    nuevocheck.innerHTML = `
+        <input class="form-check-input" type="checkbox" name="flexRadioDefault" id="flexRadioDefault">
+        <label class="form-check-label" for="flexRadioDefault">
+            ${data[position].category}
+        </label>
+    `;
     
-
+    padre.appendChild(nuevocheck);
     nuevocheck.querySelector('input').addEventListener('change', handleCheckboxChange);
 }
-function pintarCheckBox(padre, data) {
-  let revision = [];
 
-  for (let index = 0; index < data.length; index++) {
-    if (revision.some(element => element === data[index].category)) {
-    } else {
-      crearCheckBox(padre, data, index);
-      revision.push(data[index].category);
+function pintarCheckBox(padre, data) {
+    let revision = [];
+    
+    for (let index = 0; index < data.length; index++) {
+        if (!revision.includes(data[index].category)) {
+            crearCheckBox(padre, data, index);
+            revision.push(data[index].category);
+        }
     }
-  }
 }
 
+// Función para aplicar los filtros combinados
+function applyFilters() {
+    let filteredNotes = arregloupcomin.filter(event => {
+        let matchesCategory = selectedCategories.size === 0 || selectedCategories.has(event.category);
+        let matchesSearchTerm = event.name.toLowerCase().includes(searchTerm) || event.description.toLowerCase().includes(searchTerm);
+        return matchesCategory && matchesSearchTerm;
+    });
+    
+    padre.innerHTML = "";
+    
+    if (filteredNotes.length === 0) {
+        padre.innerHTML = `
+            <div class="alert bg-secondary">
+                <h2>no hay contenido relacionado</h2>
+                <p>verifica los parametros de busqueda</p>
+            </div>
+        `;
+        console.log("No hay coincidencias");
+    } else {
+        pintarTarjeta(padre, filteredNotes);
+    }
+}
 
-let padreCheck= document.getElementById('padreChecksup')
+// Listener para el searchbar
+let searchBar = document.getElementById("searchbarup");
+searchBar.addEventListener("keyup", function() {
+    searchTerm = searchBar.value.toLowerCase();
+    applyFilters();
+});
 
-pintarCheckBox(padreCheck,arregloupcomin)
-
+// Inicialización
+let padreCheck = document.getElementById('padreChecksup');
+pintarCheckBox(padreCheck, arregloupcomin);
 
 
 

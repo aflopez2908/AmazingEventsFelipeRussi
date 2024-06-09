@@ -198,67 +198,6 @@ const data = {
 let padre = document.getElementById("cards_container");
 impresion=[]
 
-
-function handleCheckboxChange(event) {
-  let label = event.target.nextElementSibling;
-  if (event.target.checked){
-
-  temporal=[] 
-
-  for (let index = 0; index < data.events.length; index++) {
-    console.log(label.textContent);
-    console.log(data.events[index].category);
-    if(label.textContent.trim()  == data.events[index].category){
-      temporal.push(data.events[index])
-
-    }
-   
-      
-  }}
-  else {
-    // Si el checkbox no está marcado, eliminar eventos de impresion y temporal que coincidan con la categoría
-    temporal=temporal.filter(event => event.category !== label.textContent.trim())
-    impresion= impresion.filter(event => event.category !== label.textContent.trim())
-}
-
-impresion=impresion.concat(temporal)
-console.log(impresion);
-
-  padre.innerHTML=''
-  
-  pintarTarjeta(padre,impresion)
-  
-
-
-
-  console.log(temporal);
-  
-  // Obtener el label asociado al checkbox
-  // if (event.target.checked) {
-  //     console.log(label.textContent);
-  //     // Agregar la lógica adicional si es necesario
-  // }
-}
-
-function crearCheckBox(padre, data, position){
-
-    let nuevocheck= document.createElement("div");
-    nuevocheck.classList.add('form-check')
-
-    nuevocheck.innerHTML=`
-
-    <input class="form-check-input" type="checkbox" name="flexRadioDefault" id="flexRadioDefault">
-                    <label class="form-check-label" for="flexRadioDefault">
-                        ${data[position].category}
-                    </label>
-    
-    `
-    padre.appendChild(nuevocheck) 
-    
-
-    nuevocheck.querySelector('input').addEventListener('change', handleCheckboxChange);
-}
-
 function crearTarjeta(padre, data,position) {
 
   let nuevaTarjeta = document.createElement("div");
@@ -289,64 +228,81 @@ function pintarTarjeta(padre,data) {
     }
     
 }
+// Variables globales para almacenar el estado de los filtros
+let searchTerm = '';
+let selectedCategories = new Set();
+let padreCheck = document.getElementById('padreChecks');
 
-function pintarCheckBox(padre, data) {
-  let revision = [];
+// Inicializar el contenido
+pintarCheckBox(padreCheck, data.events);
+pintarTarjeta(padre, data.events);
 
-  for (let index = 0; index < data.length; index++) {
-    if (revision.some(element => element === data[index].category)) {
-    } else {
-      crearCheckBox(padre, data, index);
-      revision.push(data[index].category);
-    }
-  }
-}
-
-
-
-let padreCheck= document.getElementById('padreChecks')
-
-pintarTarjeta(padre,data.events)
-pintarCheckBox(padreCheck,data.events)
-
-
-
-//definicion del listener para traer el searchbar
+// Listener para el searchbar
 let searchBar = document.getElementById("searchbarhome");
-
 searchBar.addEventListener("keyup", function() {
-  let searchTerm = searchBar.value.toLowerCase();
-
-
-  let filteredNotes = data.events.filter(function(data) {
-    return data.name.toLowerCase().includes(searchTerm) || 
-           data.description.toLowerCase().includes(searchTerm);
-  });
-
-  padre.innerHTML = "";
-
-  if (filteredNotes.length === 0) {
-
-    padre.innerHTML=(`
-
-    <div class="alert bg-secondary">
-
-                <h2>no hay contenido relacionado</h2>
-
-                <p>verifica los parametros de busqueda</p>
-
-            </div>
-    
-    `)
-    
-    console.log("No hay coincidencias");
-  } else {
-    pintarTarjeta(padre, filteredNotes);
-  }
-  
+    searchTerm = searchBar.value.toLowerCase();
+    applyFilters();
 });
 
+// Función para aplicar los filtros combinados
+function applyFilters() {
+    let filteredNotes = data.events.filter(event => {
+        let matchesCategory = selectedCategories.size === 0 || selectedCategories.has(event.category);
+        let matchesSearchTerm = event.name.toLowerCase().includes(searchTerm) || event.description.toLowerCase().includes(searchTerm);
+        return matchesCategory && matchesSearchTerm;
+    });
 
+    padre.innerHTML = "";
 
+    if (filteredNotes.length === 0) {
+        padre.innerHTML = `
+            <div class="alert bg-secondary">
+                <h2>no hay contenido relacionado</h2>
+                <p>verifica los parametros de busqueda</p>
+            </div>
+        `;
+        console.log("No hay coincidencias");
+    } else {
+        pintarTarjeta(padre, filteredNotes);
+    }
+}
 
+// Listener para los checkboxes
+function handleCheckboxChange(event) {
+    let label = event.target.nextElementSibling;
+    let category = label.textContent.trim();
+    
+    if (event.target.checked) {
+        selectedCategories.add(category);
+    } else {
+        selectedCategories.delete(category);
+    }
+    
+    applyFilters();
+}
 
+function crearCheckBox(padre, data, position) {
+    let nuevocheck = document.createElement("div");
+    nuevocheck.classList.add('form-check');
+    
+    nuevocheck.innerHTML = `
+        <input class="form-check-input" type="checkbox" name="flexRadioDefault" id="flexRadioDefault${position}">
+        <label class="form-check-label" for="flexRadioDefault${position}">
+            ${data[position].category}
+        </label>
+    `;
+    
+    padre.appendChild(nuevocheck);
+    nuevocheck.querySelector('input').addEventListener('change', handleCheckboxChange);
+}
+
+function pintarCheckBox(padre, data) {
+    let revision = [];
+    
+    for (let index = 0; index < data.length; index++) {
+        if (!revision.includes(data[index].category)) {
+            crearCheckBox(padre, data, index);
+            revision.push(data[index].category);
+        }
+    }
+}
