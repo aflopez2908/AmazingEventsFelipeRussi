@@ -112,3 +112,202 @@ export function menores(data){
       
      return temp 
     }
+
+
+    export function mayorasistencia(data) {
+      data= data.events
+  
+      const objetoMayor = data.reduce((max, obj) => (obj.assistance > max.assistance ? obj : max), data[0]);
+      return objetoMayor
+  
+  }
+  
+  export function menorasistencia(data) {
+  
+      data= data.events
+  
+      const objetoMenor = data.reduce((min, obj) => (obj.assistance < min.assistance ? obj : min), data[0]);
+      return objetoMenor
+  
+  }
+  
+  export function mayorCapacidad(data) {
+  
+      data= data.events
+  
+      const objetoMayorCapacidad = data.reduce((max, obj) => (obj.capacity > max.capacity ? obj : max), data[0]);
+      return objetoMayorCapacidad
+  
+  }
+  
+  export function pastEventsData(data){
+  
+      let eventos= data.events.filter(event => event.date < data.currentDate);
+  
+      const resultado = eventos.reduce((acc, evento) => {
+          const { category, assistance, capacity, price } = evento;
+          const dineroGanado = assistance * price;
+          const porcentajeAsistencia = (assistance / capacity).toFixed(2) * 100;
+      
+          if (!acc[category]) {
+              acc[category] = {
+                  categoria: category,
+                  dineroGanado: 0,
+                  totalEventos: 0,
+                  porcentajeAsistenciaTotal: 0
+              };
+          }
+      
+          acc[category].dineroGanado += dineroGanado;
+          acc[category].porcentajeAsistenciaTotal += porcentajeAsistencia;
+          acc[category].totalEventos += 1;
+          
+          
+          return acc;
+      }, {});
+      
+      // 2. Convertir el objeto resultado en un array y calcular el promedio de porcentaje de asistencia por categoría
+      const arrayResultado = Object.values(resultado).map(categoria => ({
+          categoria: categoria.categoria,
+          dineroGanado: categoria.dineroGanado,
+          porcentajeAsistenciaPromedio: categoria.porcentajeAsistenciaTotal / categoria.totalEventos
+      }));
+      
+  
+      return arrayResultado
+  
+      
+  
+       
+  }
+  
+  export function pintarPastEvents(data){
+      let texto=``
+      data=pastEventsData(data)
+  
+      data.forEach(element => {
+  
+      texto+= `
+      <tr>
+      <td>${element.categoria}</td>
+      <td>${element.dineroGanado}</td>
+      <td>${element.porcentajeAsistenciaPromedio}%</td>
+      </tr>
+          
+          `
+      });
+  
+      return texto
+  
+  
+      
+  }
+  
+  export function upcomingEventsData(data){
+  
+      let eventos= data.events.filter(event => event.date > data.currentDate);
+      console.log(eventos);
+      const resultado = eventos.reduce((acc, evento) => {
+          const { category, capacity, price,estimate } = evento;
+          const dineroGanado = capacity * price;
+          const porcentajeAsistencia = (estimate / capacity).toFixed(2) * 100;
+      
+          if (!acc[category]) {
+              acc[category] = {
+                  categoria: category,
+                  dineroGanado: 0,
+                  totalEventos: 0,
+                  porcentajeAsistenciaTotal: 0
+              };
+          }
+      
+          acc[category].dineroGanado += dineroGanado;
+          acc[category].porcentajeAsistenciaTotal += porcentajeAsistencia;
+          acc[category].totalEventos += 1;
+          
+          
+          return acc;
+      }, {});
+      
+      // 2. Convertir el objeto resultado en un array y calcular el promedio de porcentaje de asistencia por categoría
+      const arrayResultado = Object.values(resultado).map(categoria => ({
+          categoria: categoria.categoria,
+          dineroGanado: categoria.dineroGanado,
+          porcentajeAsistenciaPromedio: categoria.porcentajeAsistenciaTotal / categoria.totalEventos
+      }));
+      
+  
+      return arrayResultado
+  
+      
+  
+       
+  }
+  export function pintarUpcomingEvents(data){
+      let texto=``
+      data=upcomingEventsData(data)
+  
+      data.forEach(element => {
+  
+      texto+= `
+      <tr>
+      <td>${element.categoria}</td>
+      <td>${element.dineroGanado}</td>
+      <td>${element.porcentajeAsistenciaPromedio}%</td>
+      </tr>
+          
+          `
+      });
+  
+      return texto
+  
+  
+  
+      
+  }
+  
+  export function pintarTabla(data,padre) {
+  
+      padre.innerHTML = `
+  <table class="table table-bordered">
+  <thead>
+    <tr>
+      <th colspan="3"  scope="row" class="table-active">Events Statics</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Event with higher assistance</td>
+      <td>Events with lower assistance</td>
+      <td>Event with larger capacity</td>
+    </tr>
+    <tr>
+      <td>${mayorasistencia(data).name} : ${mayorasistencia(data).assistance} </td>
+      <td>${menorasistencia(data).name} : ${menorasistencia(data).assistance} </td>
+      <td> ${mayorCapacidad(data).name} : ${mayorCapacidad(data).capacity} </td>
+    </tr>
+      <th colspan="3"  scope="row" class="table-active">Upcoming Events Estatic by Category</th>
+    </tr>
+      <tr>
+      <td>Categories</td>
+      <td>Revenues</td>
+      <td>Porcentage of assitance</td>
+    </tr>
+  
+    ${pintarPastEvents(data)}
+      <th colspan="3"  scope="row">Past Events Statics by Category</th>
+    </tr>
+    <tr>
+        <td>Categories</td>
+      <td>Revenues</td>
+      <td>Porcentage of assitance</td>
+      </tr>
+      ${pintarUpcomingEvents(data)}
+  
+  </tbody>
+  </table>
+  
+  `
+  
+  
+  }
