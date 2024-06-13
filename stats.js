@@ -3,8 +3,6 @@ import {pintarTabla} from './module.js'
 let padre = document.getElementById("tablestats");
 
 
-
-
 async function obtenerEventos() {
     try {
         const response = await fetch('https://mindhub-xj03.onrender.com/api/amazing');

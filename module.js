@@ -162,7 +162,7 @@ export function menores(data){
           acc[category].porcentajeAsistenciaTotal += porcentajeAsistencia;
           acc[category].totalEventos += 1;
           
-          
+          console.log(acc);
           return acc;
       }, {});
       
@@ -190,7 +190,7 @@ export function menores(data){
       texto+= `
       <tr>
       <td>${element.categoria}</td>
-      <td>${element.dineroGanado}</td>
+      <td>${formatearComoDolares(element.dineroGanado)}</td>
       <td>${element.porcentajeAsistenciaPromedio}%</td>
       </tr>
           
@@ -252,7 +252,7 @@ export function menores(data){
       texto+= `
       <tr>
       <td>${element.categoria}</td>
-      <td>${element.dineroGanado}</td>
+      <td>${formatearComoDolares(element.dineroGanado)}</td>
       <td>${element.porcentajeAsistenciaPromedio}%</td>
       </tr>
           
@@ -265,6 +265,14 @@ export function menores(data){
   
       
   }
+  export function formatearComoDolares(valor) {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(valor);
+}
   
   export function pintarTabla(data,padre) {
   
@@ -286,6 +294,17 @@ export function menores(data){
       <td>${menorasistencia(data).name} : ${menorasistencia(data).assistance} </td>
       <td> ${mayorCapacidad(data).name} : ${mayorCapacidad(data).capacity} </td>
     </tr>
+
+    <th colspan="3"  scope="row">Past Events Statics by Category</th>
+    </tr>
+    <tr>
+        <td>Categories</td>
+      <td>Revenues</td>
+      <td>Porcentage of assitance</td>
+      </tr>
+      ${pintarPastEvents(data)}
+
+
       <th colspan="3"  scope="row" class="table-active">Upcoming Events Estatic by Category</th>
     </tr>
       <tr>
@@ -293,16 +312,10 @@ export function menores(data){
       <td>Revenues</td>
       <td>Porcentage of assitance</td>
     </tr>
-  
-    ${pintarPastEvents(data)}
-      <th colspan="3"  scope="row">Past Events Statics by Category</th>
-    </tr>
-    <tr>
-        <td>Categories</td>
-      <td>Revenues</td>
-      <td>Porcentage of assitance</td>
-      </tr>
-      ${pintarUpcomingEvents(data)}
+    ${pintarUpcomingEvents(data)}
+    
+      
+      
   
   </tbody>
   </table>
